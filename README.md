@@ -2,9 +2,9 @@
 
 #### 此项目为前后端分离项目
 
-#### 前台展示页面是用`小程序`搭建，后台展示页面使用`vue`搭建。
+#### 前台展示页面是用`小程序`搭建，后台展示页面使用`vue`搭建。 小程序前端代码地址：[小程序端](https://github.com/CocaineCong/Car-Mini-Program)
 
-#### 后端主部分使用`Golang`的`Gin`框架，还有一部分是封装了`OCR`识别`Python`的`Flask`框架。
+#### 后端主部分使用`Golang`的`Gin`框架，还有一部分是封装了`OCR`识别`Python`的`Flask`框架。 Python端代码[python](https://github.com/CocaineCong/Car-Yolo-FasterRcnn)
 
 ## 前言
 
