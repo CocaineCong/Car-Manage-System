@@ -17,9 +17,9 @@ func UserLogin(c *gin.Context) {
 	status := 200
 	userID := session.Get("userId")
 	code := c.Request.Header.Get("AuthCode")
-	var service service.UserLoginService
-	if err := c.ShouldBind(&service); err == nil {
-		res := service.Login(userID  , code, status)
+	var loginService service.UserLoginService
+	if err := c.ShouldBind(&loginService); err == nil {
+		res := loginService.Login(userID  , code, status)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
@@ -48,9 +48,9 @@ func CheckToken(c *gin.Context) {
 
 func VaildEmail(c *gin.Context) {
 	var service service.VaildEmailService
-	var operationType = c.Request.Header.Get("operation_type")
+	authorization := c.Request.Header.Get("Authorization")
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Vaild(StrToUInt(operationType))
+		res := service.Vaild(authorization)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
@@ -79,9 +79,10 @@ func StrToUInt(str string) uint {
 
 func VaildPhone(c *gin.Context) {
 	var service service.VaildPhoneService
-	var operationType = c.Request.Header.Get("operation_type")
+	//var operationType = c.Request.Header.Get("operation_type")
+	authorization := c.Request.Header.Get("Authorization")
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Vaild(StrToUInt(operationType))
+		res := service.Vaild(authorization)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

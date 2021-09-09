@@ -160,7 +160,7 @@ func (c *Client) Read() {
 				_ = c.Socket.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("{\"content\": \"达到限制\", \"code\": %d}", e.WebsocketLimit)))
 				_, _ = conf.RedisClient.Expire(c.ID, time.Hour*24*30).Result() // 防止重复骚扰，未建立连接刷新过期时间一个月
 				continue
-			}else {
+			} else {
 				conf.RedisClient.Incr(c.ID)
 				_, _ = conf.RedisClient.Expire(c.ID, time.Hour*24*30*3).Result() // 防止过快“分手”，建立连接三个月过期
 			}
@@ -170,7 +170,7 @@ func (c *Client) Read() {
 				Message: []byte(sendMsg.Content),
 			}	// 将读取到的信息，直接进行广播操作，如果对方在线，则保存为已读信息（定时过期），如果不在线，则保存为未读信息。（Redis）
 		}else if sendMsg.Type == 2 {   // msg 时间戳
-			// 拉取历史记录
+			// 拉取历史记录、
 			time, err := strconv.Atoi(sendMsg.Content)
 			if err != nil {
 				time = 9999999999

@@ -16,14 +16,13 @@ func NewRouter() *gin.Engine {
 	r.Use(sessions.Sessions("mysession",store))
 	v1 := r.Group("api/v1")
 	{
-		v1.GET("/MessageIndex/:id",ws.MessageIndex) 			//获取最新信息列表
-		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code
-		v1.POST("/user/login",api.UserLogin)	  	  		//用户登陆
-		v1.GET("/user/show",api.UserShow)		  	    //获取用户信息
+		v1.GET("/MessageIndex/:id",ws.MessageIndex) 	//获取最新信息列表
+		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code,绑定手机
+		v1.POST("/user/login",api.UserLogin)	  	  	//用户登陆
 		v1.GET("/get-topic",api.GetTopic)			    //获取全部话题
 		v1.GET("/get-social",api.GetSocial)			    //获取全部帖子
 		v1.POST("upload",api.UpLoad)
-		v1.GET("/ws", ws.WsHandler)  //通信
+		v1.GET("/ws", ws.WsHandler)  						//通信
 		v1.GET("/get-user-id/:id",api.MessageUserInfo)		//获取聊天好友的信息
 		v1.GET("/get-my-friend/:user_id",api.ShowMyFriend)  //获取我的好友
 		v1.POST("/create-my-friend/:id",api.CreateFriend)   //关注好友
@@ -36,11 +35,11 @@ func NewRouter() *gin.Engine {
 			CommentGroup.GET("/children/index", api.ShowAllComChildren)
 			CommentGroup.POST("/create-comment", api.CreateComment)
 		}
-
 		authed := v1.Group("/")
 		authed.Use(middleware.JWT())
 		{
 			authed.GET("ping",api.CheckToken)  				   //验证token
+			authed.GET("/user/show",api.UserShow)		  	    //获取用户信息
 			authed.POST("/user/vaild-email", api.VaildEmail)   //绑定邮箱
 			authed.POST("/user/vaild-phone",api.VaildPhone)    //绑定手机
 			//authed.GET("/get-user-id/:id",api.MessageUserInfo)//

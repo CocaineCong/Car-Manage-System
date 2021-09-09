@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 type WxSession struct {
@@ -124,25 +123,25 @@ func (service *UserInfoService) UserInfo() serializer.Response {
 	var openid string
 	code := e.Success
 	//验证token
-	if service.Token == "" {
-		code = e.InvalidParams
-	} else {
-		claims, err := util.ParseEmailToken(service.Token)
-		if err != nil {
-			logging.Info(err)
-			code = e.ErrorAuthCheckTokenFail
-		} else if time.Now().Unix() > claims.ExpiresAt {
-			code = e.ErrorAuthCheckTokenTimeout
-		} else {
-			openid = claims.OpenID
-		}
-	}
-	if code != e.Success {
-		return serializer.Response{
-			Status: code,
-			Msg:    e.GetMsg(code),
-		}
-	}
+	//if service.Token == "" {
+	//	code = e.InvalidParams
+	//} else {
+	//	claims, err := util.ParseEmailToken(service.Token)
+	//	if err != nil {
+	//		logging.Info(err)
+	//		code = e.ErrorAuthCheckTokenFail
+	//	} else if time.Now().Unix() > claims.ExpiresAt {
+	//		code = e.ErrorAuthCheckTokenTimeout
+	//	} else {
+	//		openid = claims.OpenID
+	//	}
+	//}
+	//if code != e.Success {
+	//	return serializer.Response{
+	//		Status: code,
+	//		Msg:    e.GetMsg(code),
+	//	}
+	//}
 	//获取该用户信息
 	var user model.User
 	if err := model.DB.First(&user).Where("open_id = ?",openid).Error; err != nil {

@@ -6,45 +6,25 @@ import (
 	"CarDemo1/pkg/logging"
 	"CarDemo1/pkg/util"
 	"CarDemo1/serializer"
-	"time"
 )
 
 //VaildEmailService 绑定、解绑邮箱和修改密码的服务
 type VaildEmailService struct {
-	Token string `form:"token" json:"token"`
+	OperationType int `form:"operation_type" json:"operation_type"`
 	Email string `form:"email" json:"email"`
 }
 
 
 
 //Vaild 绑定邮箱
-func (service *VaildEmailService) Vaild(operationType uint) serializer.Response {
+func (service *VaildEmailService) Vaild(authorization string) serializer.Response {
 	var email string
 	var openid string
 	code := e.Success
-	//验证token
-	if service.Token == "" {
-		code = e.InvalidParams
-	} else {
-		claims, err := util.ParseEmailToken(service.Token)
-		if err != nil {
-			logging.Info(err)
-			code = e.ErrorAuthCheckTokenFail
-		} else if time.Now().Unix() > claims.ExpiresAt {
-			code = e.ErrorAuthCheckTokenTimeout
-		} else {
-			openid = claims.OpenID
-		}
-	}
+	claims , _ := util.ParseToken(authorization)
+	openid  = claims.OpenID
 	email = service.Email
-	if code != e.Success {
-		return serializer.Response{
-			Status: code,
-			Msg:    e.GetMsg(code),
-		}
-	}
-	//fmt.Println("opentionType",operationType)
-	if operationType == 1 {
+	if service.OperationType == 1 {
 		//1.绑定邮箱
 		if err := model.DB.Table("user").Where("open_id=?", openid).Update("email", email).Error; err != nil {
 			logging.Info(err)
@@ -55,7 +35,7 @@ func (service *VaildEmailService) Vaild(operationType uint) serializer.Response 
 				Error:  err.Error(),
 			}
 		}
-	} else if operationType == 2 {
+	} else if service.OperationType == 2 {
 		//2.解绑邮箱
 		if err := model.DB.Table("user").Where("open_id=?", openid).Update("email", "" ).Error; err != nil {
 			logging.Info(err)
@@ -77,7 +57,6 @@ func (service *VaildEmailService) Vaild(operationType uint) serializer.Response 
 			Msg:    e.GetMsg(code),
 		}
 	}
-	//fmt.Println(user)
 	//返回用户信息
 	return serializer.Response{
 		Status: code,

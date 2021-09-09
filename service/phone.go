@@ -19,7 +19,7 @@ import (
 )
 
 type VaildPhoneService struct {
-	Token string `form:"token" json:"token"`
+	OperationType int `form:"operation_type" json:"operation_type"`
 	Phone string `form:"phone" json:"phone"`
 	Code  int `form:"code" json:"code"`
 }
@@ -29,33 +29,14 @@ type GetCodeService struct {
 }
 
 
-func (service *VaildPhoneService) Vaild(operationType uint) serializer.Response {
+func (service *VaildPhoneService) Vaild(authorization string) serializer.Response {
 	var phone string
 	var openid string
 	code := e.Success
-	//验证token
-	if service.Token == "" {
-		code = e.InvalidParams
-	} else {
-		claims, err := util.ParseEmailToken(service.Token)
-		if err != nil {
-			logging.Info(err)
-			code = e.ErrorAuthCheckTokenFail
-		} else if time.Now().Unix() > claims.ExpiresAt {
-			code = e.ErrorAuthCheckTokenTimeout
-		} else {
-			openid = claims.OpenID
-		}
-	}
 	phone = service.Phone
-	if code != e.Success {
-		return serializer.Response{
-			Status: code,
-			Msg:    e.GetMsg(code),
-		}
-	}
-
-	if operationType == 1 {
+	claims,_:= util.ParseToken(authorization)
+	openid = claims.OpenID
+	if service.OperationType == 1 {
 		//1.绑定手机
 		if err := conf.RedisClient.Get("code").Err(); err != nil{
 			fmt.Println(err)
@@ -78,7 +59,7 @@ func (service *VaildPhoneService) Vaild(operationType uint) serializer.Response 
 				Error:  err.Error(),
 			}
 		}
-	} else if operationType == 2 {
+	} else if service.OperationType == 2 {
 		//2.解绑手机
 		if err := conf.RedisClient.Get("code").Err(); err != nil{
 			fmt.Println(err)
