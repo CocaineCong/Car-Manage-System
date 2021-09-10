@@ -14,8 +14,8 @@ import (
 
 //全部帖子
 type SocialInfoShow struct {
-	Limit int `form:"limit" json:"limit"`
-	Start int `form:"start" json:"start"`
+	PageSize int `form:"page_size" json:"page_size"`
+	PageNum int `form:"page_num" json:"page_num"`
 	Type  int `form:"type" json:"type"`
 }
 //某个帖子细节
@@ -60,8 +60,8 @@ func (service *SocialInfoShow) List() serializer.Response {
 	var Society []model.Society
 	total := 0
 	code := e.Success
-	if service.Limit == 0 {
-		service.Limit = 15
+	if service.PageSize == 0 {
+		service.PageSize = 15
 	}
 	if err := model.DB.Model(model.Society{}).Count(&total).Error; err != nil {
 		logging.Info(err)
@@ -72,7 +72,7 @@ func (service *SocialInfoShow) List() serializer.Response {
 			Error:  err.Error(),
 		}
 	}
-	if err := model.DB.Limit(service.Limit).Offset(service.Start).Find(&Society).
+	if err := model.DB.Limit(service.PageSize).Offset((service.PageNum-1)*service.PageSize).Find(&Society).
 		Error; err != nil {
 		logging.Info(err)
 		code = e.ErrorDatabase
@@ -84,22 +84,6 @@ func (service *SocialInfoShow) List() serializer.Response {
 	}
 	return serializer.BuildListResponse(serializer.BuildSocials(Society), uint(total))
 }
-	//var Socials []model.Society
-	//code := e.Success
-	//if err := model.DB.Find(&Socials).Error; err != nil {
-	//	logging.Info(err)
-	//	code = e.ErrorDatabase
-	//	return serializer.Response{
-	//		Status: code,
-	//		Msg:    e.GetMsg(code),
-	//		Error:  err.Error(),
-	//	}
-	//}
-	//return serializer.Response{
-	//	Status: code,
-	//	Data:   serializer.BuildSocials(Socials),
-	//	Msg:    e.GetMsg(code),
-	//}
 
 // 帖子详情
 func (service *ShowSocialService) Show(id string) serializer.Response {
@@ -236,9 +220,9 @@ func (service *UpdateSocialService) Update() serializer.Response {
 	social := model.Society{
 		CategoryID:    service.CategoryID,
 		Title:         service.Title,
-		Content:          service.Content,
+		Content:       service.Content,
 		Picture:       service.Picture,
-		CategoryName:       service.CategoryName,
+		CategoryName:  service.CategoryName,
 	}
 	code := e.Success
 	err := model.DB.Save(&social).Error
@@ -262,7 +246,7 @@ func (service *SearchSocialsService) Show() serializer.Response {
 	var socials []model.Society
 	code := e.Success
 	err := model.DB.Where("title LIKE ? OR content LIKE ?","%"+service.Search+"%", "%"+service.Search+"%").
-		Find(&socials).Error
+		Limit(service.PageSize).Offset((service.PageNum-1)*service.PageSize).Find(&socials).Error
 	if err != nil {
 		logging.Info(err)
 		code = e.ErrorDatabase
