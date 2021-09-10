@@ -51,6 +51,8 @@ type CreateSocialService struct {
 //搜索帖子的服务
 type SearchSocialsService struct {
 	Search string `form:"search" json:"search"`
+	PageSize int `form:"page_size" json:"page_size"`
+	PageNum int `form:"page_num" json:"page_num"`
 }
 
 
@@ -259,7 +261,8 @@ func (service *UpdateSocialService) Update() serializer.Response {
 func (service *SearchSocialsService) Show() serializer.Response {
 	var socials []model.Society
 	code := e.Success
-	err := model.DB.Where("name LIKE ?", "%s"+service.Search+"%").Find(&socials).Error
+	err := model.DB.Where("title LIKE ? OR content LIKE ?","%"+service.Search+"%", "%"+service.Search+"%").
+		Find(&socials).Error
 	if err != nil {
 		logging.Info(err)
 		code = e.ErrorDatabase
@@ -269,18 +272,6 @@ func (service *SearchSocialsService) Show() serializer.Response {
 			Error:  err.Error(),
 		}
 	}
-	var socialsTemp []model.Society
-	err = model.DB.Where("info LIKE ?", "%s"+service.Search+"%").Find(&socialsTemp).Error
-	if err != nil {
-		logging.Info(err)
-		code = e.ErrorDatabase
-		return serializer.Response{
-			Status: code,
-			Msg:    e.GetMsg(code),
-			Error:  err.Error(),
-		}
-	}
-	socials = append(socials, socialsTemp...)
 	return serializer.Response{
 		Status: code,
 		Data:   serializer.BuildSocials(socials),

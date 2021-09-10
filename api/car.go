@@ -2,6 +2,7 @@ package api
 
 import (
 	"CarDemo1/pkg/logging"
+	"CarDemo1/pkg/util"
 	"CarDemo1/service"
 	"github.com/gin-gonic/gin"
 )
@@ -9,13 +10,10 @@ import (
 //创建车
 func CreateCar(c *gin.Context) {
 	file , fileHeader ,_ := c.Request.FormFile("file")
-	carNum := c.Request.Header.Get("car_num")
-	carName := c.Request.Header.Get("car_name")
-	carBossID := c.Request.Header.Get("car_boss_id")
 	fileSize := fileHeader.Size
 	service := service.CreateCarService{}
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Create(file,fileSize,carNum,carName,StrToUInt(carBossID))
+		res := service.Create(file,fileSize)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
@@ -26,8 +24,9 @@ func CreateCar(c *gin.Context) {
 //展示车
 func ShowCar(c *gin.Context) {
 	service := service.ShowCarService{}
+	chain ,_ := util.ParseToken(c.GetHeader("Authorization"))
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Show(c.Param("user_id"))
+		res := service.Show(chain.UserID)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
@@ -39,7 +38,7 @@ func ShowCar(c *gin.Context) {
 func DeleteCar(c *gin.Context) {
 	service := service.DeleteCarService{}
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Delete(c.Param("car_num"))
+		res := service.Delete(c.Param("id"))
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

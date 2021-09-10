@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	LogSavePath = "runtime/logs/"
+	LogSavePath = "runtime/logs/go.log"
 	LogSaveName = "log"
 	LogFileExt  = "log"
 	TimeFormat  = "20060102"

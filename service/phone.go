@@ -21,7 +21,7 @@ import (
 type VaildPhoneService struct {
 	OperationType int `form:"operation_type" json:"operation_type"`
 	Phone string `form:"phone" json:"phone"`
-	Code  int `form:"code" json:"code"`
+	Code  string `form:"code" json:"code"`
 }
 
 type GetCodeService struct {
@@ -41,16 +41,16 @@ func (service *VaildPhoneService) Vaild(authorization string) serializer.Respons
 		if err := conf.RedisClient.Get("code").Err(); err != nil{
 			fmt.Println(err)
 		}
-		RedisCode := fmt.Sprintf("%s",conf.RedisClient.Get("code"))
-		codeInt,_ := strconv.Atoi(RedisCode)
-		if  codeInt != service.Code {
+		RedisCode := fmt.Sprintf("%s",conf.RedisClient.Get("code"))[10:]
+		if  RedisCode != service.Code {
+			fmt.Println(RedisCode, service.Code)
 			code = e.ErrorMsgCode
 			return serializer.Response{
 				Status: code,
 				Msg:    e.GetMsg(code),
 			}
 		}
-		if err := model.DB.Table("user").Where("open_id=?", openid).Update("phone", phone).Error; err != nil {
+		if err := model.DB.Model(model.User{}).Where("open_id=?", openid).Update("phone", phone).Error; err != nil {
 			logging.Info(err)
 			code = e.ErrorDatabase
 			return serializer.Response{
@@ -65,15 +65,14 @@ func (service *VaildPhoneService) Vaild(authorization string) serializer.Respons
 			fmt.Println(err)
 		}
 		RedisCode := fmt.Sprintf("%s",conf.RedisClient.Get("code"))
-		codeInt,_ := strconv.Atoi(RedisCode)
-		if  codeInt != service.Code {
+		if  RedisCode != service.Code {
 			code = e.ErrorMsgCode
 			return serializer.Response{
 				Status: code,
 				Msg:    e.GetMsg(code),
 			}
 		}
-		if err := model.DB.Table("user").Where("open_id=?", openid).Update("phone", "" ).Error; err != nil {
+		if err := model.DB.Model(model.User{}).Where("open_id=?", openid).Update("phone", "" ).Error; err != nil {
 			logging.Info(err)
 			code = e.ErrorDatabase
 			return serializer.Response{

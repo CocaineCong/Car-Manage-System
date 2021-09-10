@@ -65,10 +65,10 @@ func (service *CreateReportService) Create() serializer.Response {
 }
 
 // Show反馈
-func (service *ReportInfoShow) List() serializer.Response {
+func (service *ReportInfoShow) List(id uint) serializer.Response {
 	var Reports []model.Report
 	code := e.Success
-	if err := model.DB.Find(&Reports).Error; err != nil {
+	if err := model.DB.Model(model.Report{}).Where("user_id = ?",id).Find(&Reports).Error; err != nil {
 		logging.Info(err)
 		code = e.ErrorDatabase
 		return serializer.Response{

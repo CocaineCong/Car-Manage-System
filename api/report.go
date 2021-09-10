@@ -2,14 +2,16 @@ package api
 
 import (
 	"CarDemo1/pkg/logging"
+	"CarDemo1/pkg/util"
 	"CarDemo1/service"
 	"github.com/gin-gonic/gin"
 )
 
 func ShowReport(c *gin.Context) {
 	service := service.ReportInfoShow{}
+	chain ,_ := util.ParseToken(c.GetHeader("Authorization"))
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.List()
+		res := service.List(chain.UserID)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

@@ -35,7 +35,7 @@ type ListCarsService struct {
 }
 
 //车辆图片
-func (service *ShowCarService) Show(id string) serializer.Response {
+func (service *ShowCarService) Show(id uint) serializer.Response {
 	var Car []model.Car
 	total := 0
 	code := e.Success
@@ -62,26 +62,26 @@ func (service *ShowCarService) Show(id string) serializer.Response {
 }
 
 //创建车辆
-func (service *CreateCarService) Create(file multipart.File ,fileSize int64,carNum, carName  string, carBossID uint) serializer.Response {
+func (service *CreateCarService) Create(file multipart.File ,fileSize int64) serializer.Response {
 	code := e.Success
 	var AccessKey = conf.AccessKey
 	var SerectKey = conf.SerectKey
 	var Bucket = conf.Bucket
 	var ImgUrl = conf.QiniuServer
 	putPlicy := storage.PutPolicy{
-		Scope:Bucket,
+		Scope: Bucket,
 	}
-	mac := qbox.NewMac(AccessKey,SerectKey)
+	mac := qbox.NewMac(AccessKey, SerectKey)
 	upToken := putPlicy.UploadToken(mac)
 	cfg := storage.Config{
-		Zone : &storage.ZoneHuanan,
-		UseCdnDomains : false,
-		UseHTTPS : false,
+		Zone:          &storage.ZoneHuanan,
+		UseCdnDomains: false,
+		UseHTTPS:      false,
 	}
 	putExtra := storage.PutExtra{}
 	formUploader := storage.NewFormUploader(&cfg)
 	ret := storage.PutRet{}
-	err := formUploader.PutWithoutKey(context.Background(),&ret,upToken,file,fileSize,&putExtra)
+	err := formUploader.PutWithoutKey(context.Background(), &ret, upToken, file, fileSize, &putExtra)
 	//fmt.Println(err)
 	if err != nil {
 		code = e.ErrorUploadFile
@@ -94,10 +94,10 @@ func (service *CreateCarService) Create(file multipart.File ,fileSize int64,carN
 	url := ImgUrl + ret.Key
 	var Car model.Car
 	Car = model.Car{
-		CarName:  carNum,
-		CarNum:    carName ,
+		CarName:   service.CarName,
+		CarNum:    service.CarNum,
 		CarImages: url,
-		CarBossId:  carBossID,
+		CarBossId: service.CarBossId,
 	}
 	err = model.DB.Create(&Car).Error
 	if err != nil {
@@ -116,10 +116,10 @@ func (service *CreateCarService) Create(file multipart.File ,fileSize int64,carN
 	}
 }
 
-func (service *DeleteCarService) Delete(car_num string) serializer.Response {
+func (service *DeleteCarService) Delete(carNum string) serializer.Response {
 	var Car model.Car
 	code := e.Success
-	err := model.DB.Where("id=?",car_num).Find(&Car).Error
+	err := model.DB.Where("id=?", carNum).First(&Car).Error
 	if err != nil {
 		logging.Info(err)
 		code = e.ErrorDatabase

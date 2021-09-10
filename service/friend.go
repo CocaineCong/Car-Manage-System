@@ -49,12 +49,12 @@ func (service *ShowFriendService) Show(id string) serializer.Response {
 }
 
 //关注好友
-func (service *CreateFriendService) Create(id uint) serializer.Response {
+func (service *CreateFriendService) Create(id,userId uint) serializer.Response {
 	var user model.User
 	var friend model.User
 	code := e.Success
 	model.DB.Model(&friend).Where(`id = ? `,id).First(&friend)  			//被关注者
-	model.DB.Model(&user).Where(`id = ?`,service.UserID).First(&user)	//关注者
+	model.DB.Model(&user).Where(`id = ?`,userId).First(&user)	//关注者
 	err := model.DB.Model(&user).Association(`Relations`).Append([]model.User{friend}).Error
 	if err != nil {
 		code = e.ErrorFriendFound
@@ -71,12 +71,12 @@ func (service *CreateFriendService) Create(id uint) serializer.Response {
 }
 
 //解除好友关系
-func (service *DeleteFriendService) Delete(id uint) serializer.Response {
+func (service *DeleteFriendService) Delete(id , userId uint) serializer.Response {
 	var user model.User
 	var friend []model.User
 	code := e.Success
 	model.DB.Model(&friend).Where(`id = ?`,id).First(&friend)  			//被关注者
-	model.DB.Model(&user).Where(`id = ?`,service.UserID).First(&user)	//关注者
+	model.DB.Model(&user).Where(`id = ?`,userId).First(&user)	//关注者
 	err := model.DB.Model(&user).Association(`Relations`).Delete(friend).Error
 	//model.DB.Model(&user).Association("Relations").Clear()
 	// Remove the relationship between source & arguments if exists
