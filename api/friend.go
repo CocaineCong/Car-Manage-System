@@ -22,7 +22,7 @@ func CreateFriend(c *gin.Context) {
 
 //展示好友
 func ShowMyFriend(c *gin.Context) {
-	service := service.ShowFriendService{}
+	service := service.ShowAllFriendService{}
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.Show(c.Param("id"))
 		c.JSON(200, res)

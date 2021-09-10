@@ -7,8 +7,9 @@ import (
 	"fmt"
 )
 
-type ShowFriendService struct {
-
+type ShowAllFriendService struct {
+	PageSize int `form:"page_size" json:"page_size"`
+	PageNum int `form:"page_num" json:"page_num"`
 }
 
 type ShowMyFriendInfoService struct {
@@ -25,13 +26,14 @@ type DeleteFriendService struct {
 
 
 //展示好友
-func (service *ShowFriendService) Show(id string) serializer.Response {
+func (service *ShowAllFriendService) Show(id string) serializer.Response {
 	var user model.User
 	var friendsList []model.User
 	code := e.Success
 	model.DB.Table("user").Where("id = ?",id).First(&user)
-	fmt.Println(user)
-	err := model.DB.Model(&user).Association("Relations").Find(&friendsList).Error
+	err := model.DB.Limit(service.PageSize).Offset((service.PageNum-1)*service.PageSize).
+		Model(&user).Association("Relations").
+		Find(&friendsList).Error
 	fmt.Println(friendsList)
 	if err != nil {
 		code = e.ErrorFriendFound
