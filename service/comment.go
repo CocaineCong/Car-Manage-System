@@ -20,12 +20,9 @@ type Page struct {
 
 type CreateNewComment struct {
 	Content     string 	`form:"content" json:"content" xml:"content"`
-	UserName    string 	`form:"user_name" json:"user_name" xml:"user_name"`
 	SocialID    uint  `form:"social_id" json:"social_id" xml:"social_id"`
 	ReplyName   string 	`form:"reply_name" json:"reply_name" xml:"reply_name"`
 	ParentId 	uint 	`form:"parent_id" json:"parent_id" xml:"parent_id"`
-	Avatar		string  `form:"avatar" json:"avatar" xml:"avatar"`
-	UserId		uint	`form:"user_id" json:"user_id" xml:"user_id"`
 }
 
 type DeleteCommentService struct {
@@ -33,16 +30,18 @@ type DeleteCommentService struct {
 }
 
 //新增评论
-func (service *CreateNewComment) Create() serializer.Response {
+func (service *CreateNewComment) Create(id uint) serializer.Response {
 	code := e.Success
+	var user model.User
+	model.DB.Model(model.User{}).Where("id=?",id).First(&user)
 	var comment model.Comment
 	comment = model.Comment{
-		UserID:    service.UserId,
+		UserID:    user.ID,
 		Content:   service.Content,
 		ParentId:  service.ParentId,
-		UserName:  service.UserName,
-		ReplyName: service.ReplyName,
-		UserAvatar:  service.Avatar,
+		UserName:  user.UserName,
+		//ReplyName: service.ReplyName,
+		UserAvatar:  user.Avatar,
 		SocialId: service.SocialID,
 	}
 	if err := model.DB.Create(&comment).Error; err!=nil{

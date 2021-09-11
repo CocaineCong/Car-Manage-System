@@ -2,6 +2,7 @@ package routes
 
 import (
 	"CarDemo1/api"
+	"CarDemo1/conf"
 	"CarDemo1/middleware"
 	"CarDemo1/service/ws"
 	"github.com/gin-contrib/sessions"
@@ -10,27 +11,30 @@ import (
 )
 
 func NewRouter() *gin.Engine {
+	conf.Init()
 	r:=gin.Default()
 	store := cookie.NewStore([]byte("something-very-secret"))
 	//r.Use(middleware.Cors())
+	middleware.HttpLogToFile(conf.AppMode)
+	r.Use(middleware.LoggerToFile())
 	r.Use(sessions.Sessions("mysession",store))
 	v1 := r.Group("api/v1")
 	{
-		v1.GET("/MessageIndex/:id",ws.MessageIndex) 	//获取最新信息列表
+		v1.GET("/MessageIndex/:id",ws.MessageIndex) 		//获取最新信息列表
 		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code,绑定手机
-		v1.POST("/user/login",api.UserLogin)	  	  	//用户登陆
+		v1.POST("/user/login",api.UserLogin)	  	  		//用户登陆
 		v1.GET("/get-topic",api.GetTopic)			    //获取全部话题
 		v1.GET("/get-social",api.GetSocial)			    //获取全部帖子
-		v1.POST("upload",api.UpLoad)
+		v1.POST("/upload",api.UpLoad)
 		v1.GET("/ws", ws.WsHandler)  						//通信
 		v1.GET("/get-user-id/:id",api.MessageUserInfo)		//获取聊天好友的信息
-		CommentGroup := v1.Group("/comment")
+		CommentGroup := v1.Group("/comment/")
 		{
-			CommentGroup.GET("/get-single/:id", api.ShowSingleComm)
-			CommentGroup.GET("/get-children", api.ShowSingleChildren)
-			CommentGroup.GET("/get-all/:id", api.ShowAllComment)
-			CommentGroup.GET("/children/index", api.ShowAllComChildren)
-			CommentGroup.POST("/create-comment", api.CreateComment)
+			CommentGroup.GET("get-single/:id", api.ShowSingleComm)
+			CommentGroup.GET("get-children", api.ShowSingleChildren)
+			CommentGroup.GET("get-all/:id", api.ShowAllComment)
+			CommentGroup.GET("children/index", api.ShowAllComChildren)
+			CommentGroup.POST("create-comment", api.CreateComment)
 		}
 		authed := v1.Group("/")
 		authed.Use(middleware.JWT())
@@ -44,8 +48,6 @@ func NewRouter() *gin.Engine {
 			authed.POST("user/vaild-email", api.VaildEmail)    //绑定邮箱
 			authed.POST("user/vaild-phone",api.VaildPhone)     //绑定手机
 			//authed.GET("/get-user-id/:id",api.MessageUserInfo)//
-			//authed.GET("/get-my-friend/:user_id",api.ShowMyFriend)  //获取我的好友
-			//authed.POST("/create-my-friend/:id",api.CreateFriend)   //关注好友
 
 			authed.POST("create-social/:content",api.CreateSocial) 	//创建帖子
 			authed.POST("search-social",api.SearchSocial)  			//搜索帖子
@@ -66,7 +68,7 @@ func NewRouter() *gin.Engine {
 			authed.POST("comment/delete-comment", api.DeleteComment)   //删除评论
 			//authed.GET("/ws", ws.WsHandler)  //通信
 
-			//authed.GET("/MessageIndex/:id",ws.MessageIndex) 			//获取最新信息列表
+			//authed.GET("MessageIndex/:id",ws.MessageIndex) 			//获取最新信息列表
 		}
 	}
 	v2 := r.Group("api/v2")

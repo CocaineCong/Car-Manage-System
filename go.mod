@@ -13,6 +13,7 @@ require (
 	github.com/onsi/ginkgo v1.16.1 // indirect
 	github.com/onsi/gomega v1.11.0 // indirect
 	github.com/qiniu/go-sdk/v7 v7.9.5
+	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go v1.0.147
 	go.mongodb.org/mongo-driver v1.5.2

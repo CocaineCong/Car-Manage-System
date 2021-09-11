@@ -2,6 +2,7 @@ package api
 
 import (
 	"CarDemo1/pkg/logging"
+	"CarDemo1/pkg/util"
 	"CarDemo1/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -11,8 +12,9 @@ import (
 //新增评论
 func CreateComment(c *gin.Context) {
 	service := service.CreateNewComment{}
+	chain,_:= util.ParseToken(c.GetHeader("Authorization"))
 	if err := c.ShouldBind(&service);err==nil{
-		res:=service.Create()
+		res:=service.Create(chain.UserID)
 		c.JSON(200,res)
 	}else {
 		c.JSON(200, ErrorResponse(err))
