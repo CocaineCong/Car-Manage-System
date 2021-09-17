@@ -43,6 +43,8 @@ const (
 	ErrorFriendFound = 20012
 	ErrorCreateFriend = 20013
 
+	ErrorCarNotFound = 20014
+
 
 	//管理员错误
 	ErrorAuthCheckTokenFail        = 30001         //token 错误

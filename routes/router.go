@@ -58,6 +58,7 @@ func NewRouter() *gin.Engine {
 			authed.GET("cars", api.ShowCar)					//展示车
 			authed.POST("cars", api.CreateCar)					//绑定车
 			authed.GET("car/:id", api.DeleteCar)				//解绑车
+			authed.POST("car", api.SearchCar)					//搜索车
 
 			authed.POST("report",api.CreateReport)      			//创造Report
 			authed.GET("delete-my-report/:id",api.DeleteReport)     //删除Report

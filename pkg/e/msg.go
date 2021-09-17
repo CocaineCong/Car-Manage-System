@@ -20,7 +20,7 @@ var MsgFlags = map[int]string{
 	ErrorExistCar :           "车不存在",
 	ErrorUpdatePhone :"绑定手机失败",
 	ErrorUpdateEmail :"绑定邮箱失败",
-
+	ErrorCarNotFound :"该车主人未绑定",
 	//Code
 	ErrorCodeReq 	: "Code请求错误",
 	ErrorCodeResp 	: "Code响应错误",

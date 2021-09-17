@@ -22,8 +22,9 @@ func ShowReport(c *gin.Context) {
 // CreateCategory 创建分类
 func CreateReport(c *gin.Context) {
 	service := service.CreateReportService{}
+	chain,_ := util.ParseToken(c.GetHeader("Authorization"))
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Create()
+		res := service.Create(chain.UserID)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

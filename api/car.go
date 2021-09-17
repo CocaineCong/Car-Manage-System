@@ -4,6 +4,7 @@ import (
 	"CarDemo1/pkg/logging"
 	"CarDemo1/pkg/util"
 	"CarDemo1/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -51,6 +52,19 @@ func ListCars(c *gin.Context) {
 	service := service.ListCarsService{}
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.List()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+		logging.Info(err)
+	}
+}
+
+//搜索车主信息
+func SearchCar(c *gin.Context) {
+	service := service.SearchCarBossService{}
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Search()
+		fmt.Println("res",res)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

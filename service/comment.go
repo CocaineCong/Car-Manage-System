@@ -35,21 +35,20 @@ func (service *CreateNewComment) Create(id uint) serializer.Response {
 	var user model.User
 	model.DB.Model(model.User{}).Where("id=?",id).First(&user)
 	var comment model.Comment
-	comment = model.Comment{
-		UserID:    user.ID,
-		Content:   service.Content,
-		ParentId:  service.ParentId,
-		UserName:  user.UserName,
-		//ReplyName: service.ReplyName,
-		UserAvatar:  user.Avatar,
-		SocialId: service.SocialID,
+	comment = model.Comment {
+		UserID:     user.ID,
+		Content:    service.Content,
+		ParentId:   service.ParentId,
+		UserName:   user.UserName,
+		UserAvatar: user.Avatar,
+		SocialId:   service.SocialID,
 	}
-	if err := model.DB.Create(&comment).Error; err!=nil{
+	if err := model.DB.Create(&comment).Error; err!=nil {
 		code = e.ErrorDatabase
 		return serializer.Response{
-			Status:    code,
-			Data:      err,
-			Msg:       e.GetMsg(code),
+			Status: code,
+			Data:   err,
+			Msg:    e.GetMsg(code),
 		}
 	}
 	return serializer.Response{

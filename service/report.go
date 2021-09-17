@@ -5,6 +5,7 @@ import (
 	"CarDemo1/pkg/e"
 	"CarDemo1/pkg/logging"
 	"CarDemo1/serializer"
+	"fmt"
 )
 
 type ReportInfoShow struct {
@@ -12,10 +13,7 @@ type ReportInfoShow struct {
 }
 
 type CreateReportService struct {
-	ID       uint     `form:"id" json:"id"`
-	TypeID   uint     `form:"type_id" json:"type_id"`
 	TypeName string   `form:"type_name" json:"type_name"`
-	UserID   uint     `form:"user_id" json:"user_id"`
 	UserName string   `form:"user_name" json:"user_name"`
 	Content  string   `form:"content" json:"content"`
 	Picture  string   `form:"picture" json:"picture"`
@@ -36,16 +34,18 @@ type UpdateReportService struct {
 }
 
 //创建反馈
-func (service *CreateReportService) Create() serializer.Response {
+func (service *CreateReportService) Create(id uint) serializer.Response {
+	var user model.User
+	model.DB.Where(model.User{}).Where("id=?",id).First(&user)
 	Report := model.Report{
-		TypeID :service.TypeID,
 		TypeName :service.TypeName,
-		UserID :service.UserID,
-		UserName :service.UserName,
+		UserID :user.ID,
+		UserName :user.UserName,
 		Content :service.Content,
 		Picture :service.Picture,
 		Finish : 0,
 	}
+	fmt.Println(Report)
 	code := e.Success
 	err := model.DB.Create(&Report).Error
 	if err != nil {

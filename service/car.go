@@ -15,6 +15,10 @@ import (
 type ShowCarService struct {
 }
 
+type SearchCarBossService struct {
+	SearchCarNumber string `json:"search_car_number" form:"search_car_number"`
+}
+
 type CreateCarService struct {
 	CarNum    string `form:"car_num" json:"car_num"`
 	CarImages string `form:"car_images" json:"car_images"`
@@ -173,4 +177,35 @@ func (service *ListCarsService) List() serializer.Response {
 		}
 	return serializer.BuildListResponse(serializer.BuildCars(Car), uint(total))
 }
+
+func (service *SearchCarBossService) Search() serializer.Response {
+	var Car model.Car
+	var user model.User
+	var count int
+	code := e.Success
+	model.DB.Model(model.Car{}).Where("car_num = ?", service.SearchCarNumber).First(&Car).Count(&count)
+	if count==0 {
+		code = e.ErrorCarNotFound
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+		}
+	}
+	err := model.DB.Model(model.User{}).Where("id = ?", Car.CarBossId).First(&user).Error
+	if err != nil {
+		logging.Info(err)
+		code = e.ErrorDatabase
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	return serializer.Response{
+		Status:    code,
+		Data:      serializer.BuildUser(user),
+		Msg:       e.GetMsg(code),
+	}
+}
+
 

@@ -56,7 +56,7 @@ func (service *CreateFriendService) Create(id,userId uint) serializer.Response {
 	var friend model.User
 	code := e.Success
 	model.DB.Model(&friend).Where(`id = ? `,id).First(&friend)  			//被关注者
-	model.DB.Model(&user).Where(`id = ?`,userId).First(&user)	//关注者
+	model.DB.Model(&user).Where(`id = ?`,userId).First(&user)			//关注者
 	err := model.DB.Model(&user).Association(`Relations`).Append([]model.User{friend}).Error
 	if err != nil {
 		code = e.ErrorFriendFound

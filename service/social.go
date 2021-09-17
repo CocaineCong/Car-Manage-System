@@ -116,6 +116,7 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,t
 	var SerectKey = conf.SerectKey
 	var Bucket = conf.Bucket
 	var ImgUrl = conf.QiniuServer
+	var urlList []string
 	putPlicy := storage.PutPolicy{
 		Scope:Bucket,
 	}
@@ -157,13 +158,14 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,t
 		}
 	}
 	url := ImgUrl + ret.Key
+	urlList = append(urlList, url)
 	social = model.Society{
 		CategoryID : category_id,
 		CategoryName : topic.CategoryName,
 		EnglishName:topic.EnglishName,
 		Title : title,
 		Content :content,
-		Picture : url,
+		Picture : urlList,
 		UserID : user_id,
 		UserName :user.UserName,
 		UserAvatar :user.Avatar,
@@ -218,11 +220,11 @@ func (service *DeleteSocialService) Delete(id string) serializer.Response {
 //更新帖子
 func (service *UpdateSocialService) Update() serializer.Response {
 	social := model.Society{
-		CategoryID:    service.CategoryID,
-		Title:         service.Title,
-		Content:       service.Content,
-		Picture:       service.Picture,
-		CategoryName:  service.CategoryName,
+		CategoryID: service.CategoryID,
+		Title:      service.Title,
+		Content:    service.Content,
+		//Picture:       service.Picture,
+		CategoryName: service.CategoryName,
 	}
 	code := e.Success
 	err := model.DB.Save(&social).Error
