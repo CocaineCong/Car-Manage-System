@@ -9,7 +9,7 @@ type Society struct {
 	EnglishName string
 	Title 	string
 	Content string
-	Picture []string
+	Picture string
 	UserID  	uint
 	UserName 	string
 	UserAvatar  string

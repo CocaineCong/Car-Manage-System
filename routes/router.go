@@ -36,6 +36,8 @@ func NewRouter() *gin.Engine {
 			CommentGroup.GET("children/index", api.ShowAllComChildren)
 			CommentGroup.POST("create-comment", api.CreateComment)
 		}
+
+
 		authed := v1.Group("/")
 		authed.Use(middleware.JWT())
 		{
@@ -47,12 +49,14 @@ func NewRouter() *gin.Engine {
 			authed.GET("user/show",api.UserShow)		  	    //获取用户信息
 			authed.POST("user/vaild-email", api.VaildEmail)    //绑定邮箱
 			authed.POST("user/vaild-phone",api.VaildPhone)     //绑定手机
-			//authed.GET("/get-user-id/:id",api.MessageUserInfo)//
+			//authed.GET("/get-user-id/:id",api.MessageUserInfo)			//
 
 			authed.POST("create-social/:content",api.CreateSocial) 	//创建帖子
+			authed.POST("create-social-img",api.CreateSocialImg)    //创建帖子的图片
 			authed.POST("search-social",api.SearchSocial)  			//搜索帖子
+			authed.GET("social-img/:id",api.ShowSocial)  			//帖子图片
 			authed.DELETE("social/:id", api.DeleteSocial)  			//删除帖子
-			authed.GET("get-my-social/:id",api.GetMySocial)  			//获得我的帖子
+			authed.GET("get-my-social/:id",api.GetMySocial)  		//获得我的帖子
 			authed.GET("get-detail/:id",api.ShowSocial)	  			//获取详细的帖子
 
 			authed.GET("cars", api.ShowCar)					//展示车
@@ -72,6 +76,8 @@ func NewRouter() *gin.Engine {
 			//authed.GET("MessageIndex/:id",ws.MessageIndex) 			//获取最新信息列表
 		}
 	}
+
+
 	v2 := r.Group("api/v2")
 	{
 		//管理员登陆注册

@@ -106,7 +106,7 @@ func (service *ShowSocialService) Show(id string) serializer.Response {
 	}
 }
 
-//创造帖子
+//创造帖子 //TODO 加上多张图片的
 func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, userId uint) serializer.Response {
 	code:=e.Success
 	var social model.Society
@@ -116,7 +116,6 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, 
 	var SerectKey = conf.SerectKey
 	var Bucket = conf.Bucket
 	var ImgUrl = conf.QiniuServer
-	var urlList []string
 	putPlicy := storage.PutPolicy{
 		Scope:Bucket,
 	}
@@ -158,14 +157,13 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, 
 		}
 	}
 	url := ImgUrl + ret.Key
-	urlList = append(urlList, url)
 	social = model.Society{
 		CategoryID :   service.CategoryID,
 		CategoryName : topic.CategoryName,
 		EnglishName:   topic.EnglishName,
 		Title :        service.Title,
 		Content :      service.Content,
-		Picture :      urlList,
+		Picture :      url,
 		UserID :       userId,
 		UserName :     user.UserName,
 		UserAvatar :   user.Avatar,

@@ -10,7 +10,7 @@ type Social struct {
 	CategoryID 	uint 	`json:"category_id"`
 	CategoryName string `json:"category_name"`
 	EnglishName string  `json:"english_name"`
-	Picture 	[]string 	`json:"picture"`
+	Picture 	string 	`json:"picture"`
 	UserName 	string 	`json:"user_name"`
 	UserAvatar 	string 	`json:"user_avatar"`
 }
