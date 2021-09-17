@@ -1,14 +1,11 @@
 package service
 
 import (
-	"CarDemo1/conf"
 	"CarDemo1/model"
 	"CarDemo1/pkg/e"
 	"CarDemo1/pkg/logging"
+	"CarDemo1/pkg/util"
 	"CarDemo1/serializer"
-	"context"
-	"github.com/qiniu/go-sdk/v7/auth/qbox"
-	"github.com/qiniu/go-sdk/v7/storage"
 	"mime/multipart"
 )
 
@@ -112,35 +109,17 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, 
 	var social model.Society
 	var user model.User
 	var topic model.Category
-	var AccessKey = conf.AccessKey
-	var SerectKey = conf.SerectKey
-	var Bucket = conf.Bucket
-	var ImgUrl = conf.QiniuServer
-	putPlicy := storage.PutPolicy{
-		Scope:Bucket,
-	}
-	mac := qbox.NewMac(AccessKey,SerectKey)
-	upToken := putPlicy.UploadToken(mac)
-	cfg := storage.Config{
-		Zone : &storage.ZoneHuanan,
-		UseCdnDomains : false,
-		UseHTTPS : false,
-	}
-	putExtra := storage.PutExtra{}
-	formUploader := storage.NewFormUploader(&cfg)
-	ret := storage.PutRet{}
-	err := formUploader.PutWithoutKey(context.Background(),&ret,upToken,file,fileSize,&putExtra)
-	if err != nil {
-		code = e.ErrorUploadFile
+	status , info := util.UploadToQiNiu(file,fileSize)
+	if status != 200 {
 		return serializer.Response{
-			Status: code,
-			Data:   err.Error(),
-			Msg:    e.GetMsg(code),
+			Status:  status  ,
+			Data:      e.GetMsg(status),
+			Error:info,
 		}
 	}
-	err = model.DB.First(&user, userId).Error //找用户
+	err := model.DB.First(&user, userId).Error //找用户
 	if err != nil {
-		code = e.ErrorUploadFile
+		code = e.ErrorDatabase
 		return serializer.Response{
 			Status: code,
 			Data:   err.Error(),
@@ -149,21 +128,20 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, 
 	}
 	err = model.DB.First(&topic, service.CategoryID).Error  //找分类
 	if err != nil {
-		code = e.ErrorUploadFile
+		code = e.ErrorDatabase
 		return serializer.Response{
 			Status: code,
 			Data:   err.Error(),
 			Msg:    e.GetMsg(code),
 		}
 	}
-	url := ImgUrl + ret.Key
 	social = model.Society{
 		CategoryID :   service.CategoryID,
 		CategoryName : topic.CategoryName,
 		EnglishName:   topic.EnglishName,
 		Title :        service.Title,
 		Content :      service.Content,
-		Picture :      url,
+		Picture :      info,
 		UserID :       userId,
 		UserName :     user.UserName,
 		UserAvatar :   user.Avatar,

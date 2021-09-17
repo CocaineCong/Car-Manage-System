@@ -51,8 +51,8 @@ func NewRouter() *gin.Engine {
 			authed.POST("user/vaild-phone",api.VaildPhone)     //绑定手机
 			//authed.GET("/get-user-id/:id",api.MessageUserInfo)			//
 
-			authed.POST("create-social/:content",api.CreateSocial) 	//创建帖子
-			authed.POST("create-social-img",api.CreateSocialImg)    //创建帖子的图片
+			authed.POST("create-social",api.CreateSocial) 	//创建帖子
+			//authed.POST("create-social-img",api.CreateSocialImg)    //创建帖子的图片
 			authed.POST("search-social",api.SearchSocial)  			//搜索帖子
 			authed.GET("social-img/:id",api.ShowSocial)  			//帖子图片
 			authed.DELETE("social/:id", api.DeleteSocial)  			//删除帖子
