@@ -107,7 +107,7 @@ func (service *ShowSocialService) Show(id string) serializer.Response {
 }
 
 //创造帖子
-func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,title,content string,user_id,category_id uint) serializer.Response {
+func (service *CreateSocialService) Create(file multipart.File ,fileSize int64, userId uint) serializer.Response {
 	code:=e.Success
 	var social model.Society
 	var user model.User
@@ -139,7 +139,7 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,t
 			Msg:    e.GetMsg(code),
 		}
 	}
-	err = model.DB.First(&user, user_id).Error   //找用户
+	err = model.DB.First(&user, userId).Error //找用户
 	if err != nil {
 		code = e.ErrorUploadFile
 		return serializer.Response{
@@ -148,7 +148,7 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,t
 			Msg:    e.GetMsg(code),
 		}
 	}
-	err = model.DB.First(&topic, category_id).Error  //找分类
+	err = model.DB.First(&topic, service.CategoryID).Error  //找分类
 	if err != nil {
 		code = e.ErrorUploadFile
 		return serializer.Response{
@@ -160,15 +160,15 @@ func (service *CreateSocialService) Create(file multipart.File ,fileSize int64,t
 	url := ImgUrl + ret.Key
 	urlList = append(urlList, url)
 	social = model.Society{
-		CategoryID : category_id,
+		CategoryID :   service.CategoryID,
 		CategoryName : topic.CategoryName,
-		EnglishName:topic.EnglishName,
-		Title : title,
-		Content :content,
-		Picture : urlList,
-		UserID : user_id,
-		UserName :user.UserName,
-		UserAvatar :user.Avatar,
+		EnglishName:   topic.EnglishName,
+		Title :        service.Title,
+		Content :      service.Content,
+		Picture :      urlList,
+		UserID :       userId,
+		UserName :     user.UserName,
+		UserAvatar :   user.Avatar,
 	}
 	err = model.DB.Create(&social).Error
 	if err != nil {

@@ -2,6 +2,7 @@ package api
 
 import (
 	"CarDemo1/pkg/logging"
+	"CarDemo1/pkg/util"
 	"CarDemo1/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -39,13 +40,10 @@ func GetMySocial(c *gin.Context) {
 func CreateSocial(c *gin.Context) {
 	file , fileHeader ,_ := c.Request.FormFile("file")
 	service := service.CreateSocialService{}
-	userId := c.Request.Header.Get("user_id")
-	title := c.Param("content")
-	content := c.Param("content")
-	categoryId := c.Request.Header.Get("category_id")
+	chaim ,_ := util.ParseToken(c.GetHeader("Authorization"))
 	fileSize := fileHeader.Size
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.Create(file,fileSize,title,content,StrToUInt(userId),StrToUInt(categoryId))
+		res := service.Create(file,fileSize,chaim.UserID)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))

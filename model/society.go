@@ -10,9 +10,9 @@ type Society struct {
 	Title 	string
 	Content string
 	Picture []string
-	UserID  uint
+	UserID  	uint
 	UserName 	string
 	UserAvatar  string
-	Price string
-	Status string
+	Price 	string
+	Status 	string  // 0 表示未交易  1 表示已交易  2 表示交易完成
 }
