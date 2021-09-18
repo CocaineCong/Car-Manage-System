@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"CarDemo1/cache"
 	"CarDemo1/conf"
 	"CarDemo1/service/ws/e"
 	. "CarDemo1/service/ws/model"
@@ -154,15 +155,15 @@ func (c *Client) Read() {
 			break
 		}
 		if sendMsg.Type == 1 {
-			r1, _ := conf.RedisClient.Get(c.ID).Result()
-			r2, _ := conf.RedisClient.Get(c.SendID).Result()
+			r1, _ := cache.RedisClient.Get(c.ID).Result()
+			r2, _ := cache.RedisClient.Get(c.SendID).Result()
 			if r1 >= "3" && r2 == ""{
 				_ = c.Socket.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("{\"content\": \"达到限制\", \"code\": %d}", e.WebsocketLimit)))
-				_, _ = conf.RedisClient.Expire(c.ID, time.Hour*24*30).Result() // 防止重复骚扰，未建立连接刷新过期时间一个月
+				_, _ = cache.RedisClient.Expire(c.ID, time.Hour*24*30).Result() // 防止重复骚扰，未建立连接刷新过期时间一个月
 				continue
 			} else {
-				conf.RedisClient.Incr(c.ID)
-				_, _ = conf.RedisClient.Expire(c.ID, time.Hour*24*30*3).Result() // 防止过快“分手”，建立连接三个月过期
+				cache.RedisClient.Incr(c.ID)
+				_, _ = cache.RedisClient.Expire(c.ID, time.Hour*24*30*3).Result() // 防止过快“分手”，建立连接三个月过期
 			}
 			log.Println(c.ID, "发送信息:", sendMsg.Content)
 			Manager.Broadcast <- &Broadcast{

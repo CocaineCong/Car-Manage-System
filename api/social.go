@@ -31,7 +31,8 @@ func ShowSocial(c *gin.Context) {
 
 func GetMySocial(c *gin.Context) {
 	service := service.ShowMySocialService{}
-	res:=service.Show(c.Param("id"))
+	chain ,_ := util.ParseToken(c.GetHeader("Authorization"))
+	res:=service.Show(chain.UserID)
 	c.JSON(200,res)
 }
 

@@ -5,17 +5,14 @@ import (
 	"CarDemo1/pkg/logging"
 	"context"
 	"fmt"
-	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/mongo" //MongoDB的Go驱动包
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/ini.v1"
-	"strconv"
 	"strings"
 )
 
 
 var (
-	RedisClient *redis.Client		//RedisClient Redis缓存客户端单例
     MongoDBClient 		*mongo.Client
 	AppMode  			string
 	HttpPort 			string
@@ -26,10 +23,6 @@ var (
 	DbPassWord 			string
 	DbName     			string
 
-	RedisDb    			string
-	RedisAddr  			string
-	RedisPw    			string
-	RedisDbName    		string
 
 	MongoDBName    		string
 	MongoDBAddr  		string
@@ -63,7 +56,6 @@ func Init() {
 	}
 	LoadServer(file)
 	LoadMysqlData(file)
-	LoadRedisData(file)
 	LoadWxChat(file)
 	LoadTxSms(file)
 	LoadQiniu(file)
@@ -77,7 +69,6 @@ func Init() {
 	model.Database(path)
 	//MongoDB
 	MongoDB()
-	Redis()
 }
 
 func MongoDB()  {
@@ -99,21 +90,7 @@ func MongoDB()  {
 }
 
 
-//Redis 在中间件中初始化redis链接
-func Redis() {
-	db, _ := strconv.ParseUint(RedisDbName, 10, 64) 		//TODO 这里记得了！！
-	client := redis.NewClient(&redis.Options{
-		Addr:     RedisAddr,
-		//Password: conf.RedisPw,
-		DB:       int(db),
-	})
-	_, err := client.Ping().Result()
-	if err != nil {
-		logging.Info(err)
-		panic(err)
-	}
-	RedisClient = client
-}
+
 
 
 func LoadServer(file *ini.File) {
@@ -131,12 +108,6 @@ func LoadMysqlData(file *ini.File) {
 	DbName = file.Section("mysql").Key("DbName").MustString("carsys")
 }
 
-func LoadRedisData(file *ini.File) {
-	RedisDb = file.Section("redis").Key("RedisDb").MustString("redis")
-	RedisAddr = file.Section("redis").Key("RedisAddr").MustString("127.0.0.1:6379")
-	RedisPw = file.Section("redis").Key("RedisPw").MustString("root")
-	RedisDbName = file.Section("redis").Key("RedisDbName").MustString("2")
-}
 
 func LoadWxChat(file *ini.File) {
 	AppID = file.Section("wechat").Key("APPID").String()

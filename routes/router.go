@@ -20,11 +20,11 @@ func NewRouter() *gin.Engine {
 	r.Use(sessions.Sessions("mysession",store))
 	v1 := r.Group("api/v1")
 	{
-		v1.GET("/MessageIndex/:id",ws.MessageIndex) 		//获取最新信息列表
+		v1.GET("/MessageIndex/:id",ws.MessageIndex) 	//获取最新信息列表
 		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code,绑定手机
-		v1.POST("/user/login",api.UserLogin)	  	  		//用户登陆
-		v1.GET("/get-topic",api.GetTopic)			    //获取全部话题
-		v1.GET("/get-social",api.GetSocial)			    //获取全部帖子
+		v1.POST("/user/login",api.UserLogin)	  	  	//用户登陆
+		v1.GET("/topic",api.GetTopic)			    //获取全部话题
+		v1.GET("/social",api.GetSocial)			    //获取全部帖子
 		v1.POST("/upload",api.UpLoad)
 		v1.GET("/ws", ws.WsHandler)  						//通信
 		v1.GET("/get-user-id/:id",api.MessageUserInfo)		//获取聊天好友的信息
@@ -43,30 +43,32 @@ func NewRouter() *gin.Engine {
 		{
 			authed.GET("ping",api.CheckToken)  				   		//验证token
 			authed.GET("get-my-friend/:id",api.ShowMyFriend)  		//获取我的好友
-			authed.GET("show-my-friend/:id",api.ShowMyFriendInfo)  //展示我的好友的信息
-			authed.POST("create-my-friend/:id",api.CreateFriend)   //关注好友
-			authed.POST("delete-my-friend/:id",api.DeleteFriend)   //删除好友
-			authed.GET("user/show",api.UserShow)		  	    //获取用户信息
-			authed.POST("user/vaild-email", api.VaildEmail)    //绑定邮箱
-			authed.POST("user/vaild-phone",api.VaildPhone)     //绑定手机
+			authed.GET("friend/:id",api.ShowMyFriendInfo)   	//展示我的好友的信息
+			authed.POST("friend/:id",api.CreateFriend)    		//关注好友
+			authed.DELETE("friend/:id",api.DeleteFriend)    		//删除好友
+			authed.GET("user/show",api.UserShow)		  	    	//获取用户信息
+			authed.POST("user/vaild-email", api.VaildEmail)    		//绑定邮箱
+			authed.POST("user/vaild-phone",api.VaildPhone)     		//绑定手机
 			//authed.GET("/get-user-id/:id",api.MessageUserInfo)			//
 
-			authed.POST("create-social",api.CreateSocial) 	//创建帖子
-			//authed.POST("create-social-img",api.CreateSocialImg)    //创建帖子的图片
+			authed.POST("create-social",api.CreateSocial) 			//创建帖子
+			//authed.POST("create-social-img",api.CreateSocialImg)    			//创建帖子的图片
 			authed.POST("search-social",api.SearchSocial)  			//搜索帖子
 			authed.GET("social-img/:id",api.ShowSocial)  			//帖子图片
 			authed.DELETE("social/:id", api.DeleteSocial)  			//删除帖子
-			authed.GET("get-my-social/:id",api.GetMySocial)  		//获得我的帖子
-			authed.GET("get-detail/:id",api.ShowSocial)	  			//获取详细的帖子
+			authed.GET("social-my",api.GetMySocial)  					//获得我的帖子
+			authed.GET("social-detail/:id",api.ShowSocial)	  			//获取详细的帖子
 
-			authed.GET("cars", api.ShowCar)					//展示车
-			authed.POST("cars", api.CreateCar)					//绑定车
-			authed.GET("car/:id", api.DeleteCar)				//解绑车
-			authed.POST("car", api.SearchCar)					//搜索车
+			//车辆操作
+			authed.GET("cars", api.ShowCar)
+			authed.POST("cars", api.CreateCar)
+			authed.GET("car/:id", api.DeleteCar)
+			authed.POST("car", api.SearchCar)
 
-			authed.POST("report",api.CreateReport)      			//创造Report
-			authed.GET("delete-my-report/:id",api.DeleteReport)     //删除Report
-			authed.GET("get-my-report",api.ShowReport)   		//获取Report
+			//反馈操作
+			authed.POST("report",api.CreateReport)
+			authed.DELETE("report/:id",api.DeleteReport)
+			authed.GET("report",api.ShowReport)
 
 			//authed.POST("upload",api.UpLoad)							//上传操作
 			//authed.POST("user/sending-email", api.SendEmail) 			//邮箱发送

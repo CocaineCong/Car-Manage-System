@@ -96,6 +96,7 @@ func (service *ShowSocialService) Show(id string) serializer.Response {
 			Error:  err.Error(),
 		}
 	}
+	social.AddView()  //增加点击
 	return serializer.Response{
 		Status: code,
 		Data:   serializer.BuildSocial(social),
@@ -241,7 +242,7 @@ func (service *SearchSocialsService) Show() serializer.Response {
 	}
 }
 
-func (service *ShowMySocialService) Show(id string) serializer.Response{
+func (service *ShowMySocialService) Show(id uint) serializer.Response{
 	var Socials []model.Society
 	code := e.Success
 	if err := model.DB.Where("user_id = ?",id).Find(&Socials).Error; err != nil {

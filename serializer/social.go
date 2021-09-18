@@ -13,6 +13,8 @@ type Social struct {
 	Picture 	string 	`json:"picture"`
 	UserName 	string 	`json:"user_name"`
 	UserAvatar 	string 	`json:"user_avatar"`
+	View uint64        `json:"view"`
+
 }
 
 //序列化话题
@@ -28,6 +30,7 @@ func BuildSocial(item model.Society) Social {
 		Picture :item.Picture,
 		UserName :item.UserName,
 		UserAvatar :item.UserAvatar,
+		View:          item.View(),
 	}
 }
 

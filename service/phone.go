@@ -1,6 +1,7 @@
 package service
 
 import (
+	"CarDemo1/cache"
 	"CarDemo1/conf"
 	"CarDemo1/model"
 	"CarDemo1/pkg/e"
@@ -38,10 +39,10 @@ func (service *VaildPhoneService) Vaild(authorization string) serializer.Respons
 	openid = claims.OpenID
 	if service.OperationType == 1 {
 		//1.绑定手机
-		if err := conf.RedisClient.Get("code").Err(); err != nil{
+		if err := cache.RedisClient.Get("code").Err(); err != nil{
 			fmt.Println(err)
 		}
-		RedisCode := fmt.Sprintf("%s",conf.RedisClient.Get("code"))[10:]
+		RedisCode := fmt.Sprintf("%s",cache.RedisClient.Get("code"))[10:]
 		if  RedisCode != service.Code {
 			fmt.Println(RedisCode, service.Code)
 			code = e.ErrorMsgCode
@@ -61,10 +62,10 @@ func (service *VaildPhoneService) Vaild(authorization string) serializer.Respons
 		}
 	} else if service.OperationType == 2 {
 		//2.解绑手机
-		if err := conf.RedisClient.Get("code").Err(); err != nil{
+		if err := cache.RedisClient.Get("code").Err(); err != nil{
 			fmt.Println(err)
 		}
-		RedisCode := fmt.Sprintf("%s",conf.RedisClient.Get("code"))
+		RedisCode := fmt.Sprintf("%s",cache.RedisClient.Get("code"))
 		if  RedisCode != service.Code {
 			code = e.ErrorMsgCode
 			return serializer.Response{
@@ -105,10 +106,10 @@ func (service *GetCodeService) SendMsg() serializer.Response {
 	rand.Seed(time.Now().UnixNano())
 	codeInt := rand.Intn(10000)
 	codeString := strconv.Itoa(codeInt)
-	if err := conf.RedisClient.Set("code", codeString, 0).Err(); err != nil{
+	if err := cache.RedisClient.Set("code", codeString, 0).Err(); err != nil{
 		logging.Info(err)     //将code存入redis中
 	}
-	if err := conf.RedisClient.Get("code").Err(); err != nil{
+	if err := cache.RedisClient.Get("code").Err(); err != nil{
 		logging.Info(err)    //将code从redis拿出来
 	}
 	credential := common.NewCredential(  //创建第一个实例对象，登陆用
