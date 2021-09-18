@@ -46,7 +46,7 @@ func CheckToken(c *gin.Context) {
 	})
 }
 
-func VaildEmail(c *gin.Context) {
+func BindEmail(c *gin.Context) {
 	var service service.VaildEmailService
 	authorization := c.Request.Header.Get("Authorization")
 	if err := c.ShouldBind(&service); err == nil {
@@ -77,7 +77,7 @@ func StrToUInt(str string) uint {
 	return uint(i)
 }
 
-func VaildPhone(c *gin.Context) {
+func BindPhone(c *gin.Context) {
 	var service service.VaildPhoneService
 	//var operationType = c.Request.Header.Get("operation_type")
 	authorization := c.Request.Header.Get("Authorization")

@@ -23,8 +23,8 @@ func NewRouter() *gin.Engine {
 		v1.GET("/MessageIndex/:id",ws.MessageIndex) 	//获取最新信息列表
 		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code,绑定手机
 		v1.POST("/user/login",api.UserLogin)	  	  	//用户登陆
-		v1.GET("/topic",api.GetTopic)			    //获取全部话题
-		v1.GET("/social",api.GetSocial)			    //获取全部帖子
+		v1.GET("/topic",api.GetTopic)			    	//获取全部话题
+		v1.GET("/social",api.GetAllSocial)			    //获取全部帖子
 		v1.POST("/upload",api.UpLoad)
 		v1.GET("/ws", ws.WsHandler)  						//通信
 		v1.GET("/get-user-id/:id",api.MessageUserInfo)		//获取聊天好友的信息
@@ -42,27 +42,32 @@ func NewRouter() *gin.Engine {
 		authed.Use(middleware.JWT())
 		{
 			authed.GET("ping",api.CheckToken)  				   		//验证token
-			authed.GET("get-my-friend/:id",api.ShowMyFriend)  		//获取我的好友
-			authed.GET("friend/:id",api.ShowMyFriendInfo)   	//展示我的好友的信息
-			authed.POST("friend/:id",api.CreateFriend)    		//关注好友
-			authed.DELETE("friend/:id",api.DeleteFriend)    		//删除好友
-			authed.GET("user/show",api.UserShow)		  	    	//获取用户信息
-			authed.POST("user/vaild-email", api.VaildEmail)    		//绑定邮箱
-			authed.POST("user/vaild-phone",api.VaildPhone)     		//绑定手机
-			//authed.GET("/get-user-id/:id",api.MessageUserInfo)			//
 
-			authed.POST("create-social",api.CreateSocial) 			//创建帖子
-			//authed.POST("create-social-img",api.CreateSocialImg)    			//创建帖子的图片
-			authed.POST("search-social",api.SearchSocial)  			//搜索帖子
-			authed.GET("social-img/:id",api.ShowSocial)  			//帖子图片
-			authed.DELETE("social/:id", api.DeleteSocial)  			//删除帖子
-			authed.GET("social-my",api.GetMySocial)  					//获得我的帖子
-			authed.GET("social-detail/:id",api.ShowSocial)	  			//获取详细的帖子
+			// 好友操作
+			authed.GET("friend-all/:id",api.ShowMyFriend)
+			authed.GET("friend/:id",api.ShowMyFriendInfo)
+			authed.POST("friend/:id",api.CreateFriend)
+			authed.DELETE("friend/:id",api.DeleteFriend)
+
+			//用户操作
+			authed.GET("user/show",api.UserShow)
+			authed.POST("user/email", api.BindEmail)
+			authed.POST("user/phone",api.BindPhone)
+			//authed.GET("/get-user-id/:id",api.MessageUserInfo)
+
+			//帖子操作
+			authed.POST("social-create",api.CreateSocial)
+			//authed.POST("create-social-img",api.CreateSocialImg)
+			authed.POST("social-search",api.SearchSocial)
+			authed.GET("social-img/:id",api.ShowSocialImgs)
+			authed.DELETE("social/:id", api.DeleteSocial)
+			authed.GET("social-my",api.GetMySocial)
+			authed.GET("social-detail/:id",api.SocialDetail)
 
 			//车辆操作
 			authed.GET("cars", api.ShowCar)
 			authed.POST("cars", api.CreateCar)
-			authed.GET("car/:id", api.DeleteCar)
+			authed.DELETE("car/:id", api.DeleteCar)
 			authed.POST("car", api.SearchCar)
 
 			//反馈操作
@@ -87,8 +92,8 @@ func NewRouter() *gin.Engine {
 		//登陆
 		v2.POST("admin/login", api.AdminLogin)
 		v2.GET("topic", api.GetTopic)   			//获得分类
-		v2.GET("socials", api.GetSocial)  			//获得帖子
-		v2.GET("socials/:id", api.ShowSocial)  		//获取帖子
+		v2.GET("socials", api.GetAllSocial)  		//获得帖子
+		v2.GET("socials/:id", api.SocialDetail)  	//获取帖子
 		v2.GET("carousels", api.ListCarousels)  	//获得轮播图
 		v2.GET("users", api.ListUsers)   			//获取用户列表
 		v2.GET("reports", api.ShowReport)   		//获取用户列表

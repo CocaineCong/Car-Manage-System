@@ -4,13 +4,12 @@ import (
 	"CarDemo1/pkg/logging"
 	"CarDemo1/pkg/util"
 	"CarDemo1/service"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 
 //获取所有的帖子
-func GetSocial(c *gin.Context) {
+func GetAllSocial(c *gin.Context) {
 	service := service.SocialInfoShow{}
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.List()
@@ -22,9 +21,8 @@ func GetSocial(c *gin.Context) {
 }
 
 //详细的帖子
-func ShowSocial(c *gin.Context) {
+func SocialDetail(c *gin.Context) {
 	service := service.ShowSocialService{}
-	fmt.Println(c.Param("id"))
 	res := service.Show(c.Param("id"))
 	c.JSON(200, res)
 }
@@ -35,7 +33,6 @@ func GetMySocial(c *gin.Context) {
 	res:=service.Show(chain.UserID)
 	c.JSON(200,res)
 }
-
 
 //创造帖子
 func CreateSocial(c *gin.Context) {
