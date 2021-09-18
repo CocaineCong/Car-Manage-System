@@ -11,5 +11,5 @@ type Comment struct {
 	UserName   string
 	UserAvatar string
 	SocialId   uint  `gorm:"ForeignKey:Social;AssociationForeignKey:social_id"` //社区帖子ID
-	Children   []Comment `gorm:"ForeignKey:Comment;AssociationForeignKey:comment_id"`
+	Children   []Comment `gorm:"ForeignKey:ParentId"`
 }
