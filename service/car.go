@@ -207,5 +207,3 @@ func (service *SearchCarBossService) Search() serializer.Response {
 		Msg:       e.GetMsg(code),
 	}
 }
-
-
