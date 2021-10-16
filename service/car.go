@@ -4,7 +4,7 @@ import (
 	"CarDemo1/conf"
 	"CarDemo1/model"
 	"CarDemo1/pkg/e"
-	"CarDemo1/pkg/logging"
+	logging "github.com/sirupsen/logrus"
 	"CarDemo1/serializer"
 	"context"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"

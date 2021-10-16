@@ -2,10 +2,10 @@ package conf
 
 import (
 	"CarDemo1/model"
-	"CarDemo1/pkg/logging"
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo" //MongoDB的Go驱动包
+	logging "github.com/sirupsen/logrus" //github.com/sirupsen/logrus
+	"go.mongodb.org/mongo-driver/mongo"  //MongoDB的Go驱动包
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/ini.v1"
 	"strings"

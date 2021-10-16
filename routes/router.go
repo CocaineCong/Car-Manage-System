@@ -15,11 +15,12 @@ func NewRouter() *gin.Engine {
 	r:=gin.Default()
 	store := cookie.NewStore([]byte("something-very-secret"))
 	//r.Use(middleware.Cors())
-	middleware.HttpLogToFile(conf.AppMode)
-	r.Use(middleware.LoggerToFile())
+	//middleware.HttpLogToFile(conf.AppMode)
+	//r.Use(middleware.LoggerToFile())
 	r.Use(sessions.Sessions("mysession",store))
 	v1 := r.Group("api/v1")
 	{
+		v1.GET("/pingTest",api.Ping)
 		v1.GET("/MessageIndex/:id",ws.MessageIndex) 	//获取最新信息列表
 		v1.GET("/user/get-code",api.UserGetCode)  	    //获得code,绑定手机
 		v1.POST("/user/login",api.UserLogin)	  	  	//用户登陆

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"CarDemo1/pkg/logging"
+	logging "github.com/sirupsen/logrus"
 	"CarDemo1/pkg/util"
 	"CarDemo1/service"
 	"fmt"

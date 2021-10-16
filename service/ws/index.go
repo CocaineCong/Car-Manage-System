@@ -13,10 +13,7 @@ import (
 )
 
 func MessageIndex(c *gin.Context) {
-	//id := "->1"
-	//log.Println("RUSH")
 	id:="->"+c.Param("id")
-	//fmt.Println(id)
 	db := conf.MongoDBClient.Database(conf.MongoDBName)
 	names, err := db.ListCollectionNames(context.TODO(), bson.D{})
 	if err != nil {

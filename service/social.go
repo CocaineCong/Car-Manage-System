@@ -3,7 +3,7 @@ package service
 import (
 	"CarDemo1/model"
 	"CarDemo1/pkg/e"
-	"CarDemo1/pkg/logging"
+	logging "github.com/sirupsen/logrus"
 	"CarDemo1/pkg/util"
 	"CarDemo1/serializer"
 	"mime/multipart"

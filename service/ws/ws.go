@@ -3,6 +3,7 @@ package ws
 import (
 	"CarDemo1/cache"
 	"CarDemo1/conf"
+	"CarDemo1/pkg/util"
 	"CarDemo1/service/ws/e"
 	. "CarDemo1/service/ws/model"
 	"fmt"
@@ -112,15 +113,13 @@ func (manager *ClientManager) Start() {
 					_ = broadcast.Client.Socket.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("{\"content\": \"对方在线应答\", \"code\": %d}", e.WebsocketOnlineReply)))
 					err := InsertOne(conf.MongoDBName, id, string(message), 1, int64(month * 3))
 					if err != nil {
-						fmt.Println("FUCK")
-						fmt.Println(err)
+						fmt.Println("InsertOne Err",err)
 					}
 				}else {
 					log.Println("对方不在线应答")
 					_ = broadcast.Client.Socket.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("{\"content\": \"对方不在线应答\", \"code\": %d}", e.WebsocketOfflineReply)))
 					err := InsertOne(conf.MongoDBName, id, string(message), 0, int64(month * 3))
-					fmt.Println("FXXK")
-					fmt.Println(err)
+					fmt.Println("ERROR",err)
 				}
 		}
 	}
@@ -133,6 +132,10 @@ func creatId(uid,touid string) string {
 
 // Read connect监听用户消息，并向指定房间广播
 func (c *Client) Read() {
+	wordTrie := util.NewTrie()
+	_ = wordTrie.Add("傻逼", nil)
+	_ = wordTrie.Add("黄色", nil)
+	_ = wordTrie.Add("艹", nil)
 	defer func() {
 		Manager.Unregister <- c
 		_ = c.Socket.Close()
@@ -186,8 +189,9 @@ func (c *Client) Read() {
 				continue
 			}
 			for _, result := range results {
+				msg,_ := wordTrie.Check(result.Msg,"***")  // 敏感词过滤
 				_ = c.Socket.WriteMessage(websocket.TextMessage, []byte(
-					"{\"msg\": "+result.Msg+", \"from\": \""+result.From+"\"}"))
+					"{\"msg\": "+ msg+", \"from\": \""+result.From+"\"}"))
 			}
 		}else if sendMsg.Type == 3 {   //msg == nil
 			// 第一次请求
@@ -196,8 +200,9 @@ func (c *Client) Read() {
 				log.Println(err)
 			}
 			for _, result := range results {
+				msg,_ := wordTrie.Check(result.Msg,"***")  // 敏感词过滤
 				_ = c.Socket.WriteMessage(websocket.TextMessage, []byte(
-					"{\"msg\": "+result.Msg+", \"from\": \""+result.From+"\"}"))
+					"{\"msg\": "+msg+", \"from\": \""+result.From+"\"}"))
 			}
 		}
 	}

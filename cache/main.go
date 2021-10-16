@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"CarDemo1/pkg/logging"
 	"fmt"
 	"github.com/go-redis/redis"
+	logging "github.com/sirupsen/logrus"
 	"gopkg.in/ini.v1"
 	"strconv"
 )

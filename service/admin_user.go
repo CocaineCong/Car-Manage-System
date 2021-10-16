@@ -4,8 +4,8 @@ package service
 import (
 	"CarDemo1/model"
 	"CarDemo1/pkg/e"
-	"CarDemo1/pkg/logging"
 	"CarDemo1/serializer"
+	logging "github.com/sirupsen/logrus"
 )
 
 type ListUserService struct {

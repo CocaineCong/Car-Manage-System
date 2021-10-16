@@ -1,7 +1,7 @@
 package api
 
 import (
-	"CarDemo1/pkg/logging"
+	logging "github.com/sirupsen/logrus"
 	"CarDemo1/serializer"
 	"CarDemo1/service"
 
@@ -25,6 +25,12 @@ func UserLogin(c *gin.Context) {
 		c.JSON(200, ErrorResponse(err))
 		logging.Info(err)
 	}
+}
+
+func Ping(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"msg":"Successfully",
+	})
 }
 
 func MessageUserInfo(c *gin.Context) {

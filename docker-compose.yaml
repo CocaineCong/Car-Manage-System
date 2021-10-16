@@ -1,0 +1,31 @@
+version: '1.0'
+
+services:
+  CarDemo:
+    build: .
+    image: car_demo
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql
+      - redis
+    command: ["./wait-for-it.sh","mysql:3306","--","main"]
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: "carsys"
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - 3306:3306
+    volumes:
+      - ./conf/config.cnf:/etc/conf.d
+#      - ./sql/init:/docker-entrypoint-initdb.d
+
+  redis:
+    container_name: redis
+    image: redis:5.0.10
+    restart: always
+    ports:
+      - 6379:6379
