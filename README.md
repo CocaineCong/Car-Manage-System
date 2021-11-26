@@ -217,16 +217,10 @@ pip install 完所需要的第三方库就可以运行了，但是要特别注�
 
 ### 2.1 主体部分
 
-**声明：这里的首页以及个人信息页面是参考**隔壁有坑**的小程序前端。
-原作者github：[GitHub](https://github.com/miniappdeveloper/gbyk)
-<img src="https://img-blog.csdnimg.cn/2021060116274051.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70 #pic_center" width="45%" >
 
-- 主页面中，UI界面简介大方得体。方便用户快速了解小程序的大体功能，也非常感谢原作者的开源！
-- 主页面呈现四个模块
-  1. 社区模块
-  2. 亲友模块
-  3. 聊天模块
-  4. 个人中心
+
+
+<img src="https://img-blog.csdnimg.cn/3fec8fb4770441f5924d7bfcbfed9b5d.png" width="45%" >
 
 
 ### 2.2 用户模块
@@ -250,7 +244,7 @@ pip install 完所需要的第三方库就可以运行了，但是要特别注�
 
 
 <img src="https://img-blog.csdnimg.cn/20210601164723199.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70" width="47%">
-<img src="https://img-blog.csdnimg.cn/20210601164852780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70 " width="47%">
+<img src="https://img-blog.csdnimg.cn/120deb384ba54fb8b77564ed0fd27a33.png" width="47%">
 
 
 
@@ -282,13 +276,9 @@ process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9n
 
 ***
 
-<img src="https://img-blog.csdnimg.cn/20210601172530128.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70">
-<img src="https://img-blog.csdnimg.cn/20210601172403459.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70">
+<img src="https://img-blog.csdnimg.cn/bc5c6bda393c413290799a66fb647e2f.png">
 
-
-
-<img src="https://img-blog.csdnimg.cn/20210601172102824.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70">
-<img src="https://img-blog.csdnimg.cn/20210601172137180.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTMwNDUwMw==,size_16,color_FFFFFF,t_70">
+<img src="https://img-blog.csdnimg.cn/92764760c9e649eca34cb11d2676cbcf.png">
 
 
 
